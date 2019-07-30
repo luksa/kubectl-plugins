@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+    echo "Force deletes a resource by removing all its finalizers and then deleting the resource"
+    echo
+    echo "Usage:     kubectl force delete <kind> <name>"
+    echo "Example:   kubectl force delete pod foo"
+    echo
+    exit 1
+fi
+
+kubectl patch $@ --type='json' -p='[{"op": "remove", "path": "/metadata/finalizers"}]'
+kubectl delete $@
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+RESOURCES=$(kubectl api-resources --verbs=list --namespaced -o name | tr "\n" ,)
+kubectl delete ${RESOURCES%?} --all
+

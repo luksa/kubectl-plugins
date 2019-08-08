@@ -12,13 +12,16 @@ if [ "$1" == "--help" ]; then
   echo "  # List all resources in the whole cluster (all cluster-scoped resources and all namespaced resources in all namespaces)"
   echo "  kubectl really get all --all-namespaces"
   echo
-  echo "  #List all resources in the whole cluster with the label foo=bar"
+  echo "  # List all resources in the whole cluster with the label foo=bar"
   echo "  kubectl really get all --selector foo=bar"
+  echo
+  echo "  # List all resources in the whole cluster in YAML format"
+  echo "  kubectl really get all -o yaml"
   echo
   echo "Usage:"
   echo "  kubectl really get all [--all-namespaces|-n namespace]"
   echo
-  echo "Also supports (almost all) options supported by kubectl get (e.g. -o yaml, --show-labels, --selector, ...)"
+  echo "Also supports (almost all) other parameters supported by kubectl get (e.g. -o yaml, --show-labels, --selector, ...)"
   exit 0
 fi
 

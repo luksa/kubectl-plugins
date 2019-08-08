@@ -1,5 +1,35 @@
 #!/bin/bash
+if [ "$1" == "--help" ]; then
+  echo "Lists resources of all kinds supported on the server, not just the ones shown by kubectl get all"
+  echo
+  echo "Examples: "
+  echo "  # List all resources in the current namespace"
+  echo "  kubectl really get all"
+  echo
+  echo "  # List all resources in the specified namespace"
+  echo "  kubectl really get all -n my-namespace"
+  echo
+  echo "  # List all resources in the whole cluster (all cluster-scoped resources and all namespaced resources in all namespaces)"
+  echo "  kubectl really get all --all-namespaces"
+  echo
+  echo "  #List all resources in the whole cluster with the label foo=bar"
+  echo "  kubectl really get all --selector foo=bar"
+  echo
+  echo "Usage:"
+  echo "  kubectl really get all [--all-namespaces|-n namespace]"
+  echo
+  echo "Also supports (almost all) options supported by kubectl get (e.g. -o yaml, --show-labels, --selector, ...)"
+  exit 0
+fi
 
-RESOURCES=$(kubectl api-resources --verbs=list --namespaced -o name | tr "\n" ,)
-kubectl get ${RESOURCES%?} --show-kind --ignore-not-found
+
+NAMESPACED=""
+if [ "$1" == "--all-namespaces" ]; then
+  NAMESPACED=""
+else
+  NAMESPACED="--namespaced"
+fi
+
+RESOURCES=$(kubectl api-resources --verbs=list $NAMESPACED -o name | tr "\n" ,)
+kubectl get ${RESOURCES%?} --show-kind --ignore-not-found $@
 

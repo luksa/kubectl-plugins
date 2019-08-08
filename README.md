@@ -9,7 +9,7 @@ My own plugins for kubectl
 Force deletes an object by removing its finalizers and then deleting it.
 
 Example usage: 
-```
+```bash
 kubectl force delete po my-stuck-pod
 ```
 
@@ -19,7 +19,7 @@ kubectl force delete po my-stuck-pod
 Lists absolutely all resources in a namespace, not just the ones returned by `kubectl get all`.
 
 Example usage: 
-```
+```bash
 # List all resources in the current namespace
 kubectl really get all
 
@@ -43,7 +43,7 @@ kubectl really get all -o yaml
 Deletes absolutely all resources in a namespace, not just the ones that `kubectl delete all` deletes.
 
 Example usage: 
-```
+```bash
 kubectl really delete all
 kubectl really delete all -n some-namespace
 ```

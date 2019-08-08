@@ -20,8 +20,21 @@ Lists absolutely all resources in a namespace, not just the ones returned by `ku
 
 Example usage: 
 ```
+# List all resources in the current namespace
 kubectl really get all
-kubectl really get all -n some-namespace
+
+# List all resources in the specified namespace
+kubectl really get all -n my-namespace
+
+# List all resources in the whole cluster (all cluster-scoped 
+# resources and all namespaced resources in all namespaces)
+kubectl really get all --all-namespaces
+
+# List all resources in the whole cluster with the label foo=bar
+kubectl really get all --selector foo=bar
+
+# List all resources in the whole cluster in YAML format
+kubectl really get all -o yaml
 ```
 
 

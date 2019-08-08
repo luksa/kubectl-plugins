@@ -1,6 +1,12 @@
 # kubectl-plugins
 
-My own plugins for kubectl
+Some of my plugins for kubectl.
+
+## Installation 
+
+Clone the repo and add it to your path (or download individual files and make sure they are executable and on your path). 
+
+I'll make these plugins installable through [Krew](https://github.com/kubernetes-sigs/krew) if there's enough interest and find the time to do it. PRs welcome :)
 
 ## Plugins
 

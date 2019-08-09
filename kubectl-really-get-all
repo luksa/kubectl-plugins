@@ -26,13 +26,12 @@ if [ "$1" == "--help" ]; then
 fi
 
 
-NAMESPACED=""
 if [ "$1" == "--all-namespaces" ]; then
-  NAMESPACED=""
+  NAMESPACED_ONLY=""
 else
-  NAMESPACED="--namespaced"
+  NAMESPACED_ONLY="--namespaced"
 fi
 
-RESOURCES=$(kubectl api-resources --verbs=list $NAMESPACED -o name | tr "\n" ,)
+RESOURCES=$(kubectl api-resources --verbs=list ${NAMESPACED_ONLY} -o name | tr "\n" ,)
 kubectl get ${RESOURCES%?} --show-kind --ignore-not-found $@
 

@@ -74,3 +74,57 @@ Example usage:
 kubectl ssh node             # access the node in a single-node cluster 
 kubectl ssh node my-node     # access a node in a multi-node cluster
 ```
+
+
+## Help wanted
+
+If anyone wants to help improve these plugins, please feel free to 
+submit a pull request any time. 
+
+I don't have time to polish these plugins or create the krew 
+metadata and submit them to the krew plugin repository. If you
+can do this, I and the rest of the Kubernetes community will 
+be forever grateful!
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```

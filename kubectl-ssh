@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+
+set -e
+
+ssh_node() {
+  node=$1
+  if [ "$node" = "" ]; then
+    node=$(kubectl get node -o name | sed 's/node\///' | tr '\n' ' ')
+    node=${node::-1}
+
+    if [[ "$node" =~ " " ]]; then
+      echo "Node name must be specified. Choose one of: [$node]"
+      exit 1
+    else
+      echo "Single-node cluster detected. Defaulting to node $node"
+    fi
+  fi
+
+  pod=$(
+    kubectl create -o name -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  generateName: ssh-node-
+  labels:
+    plugin: ssh-node
+spec:
+  nodeName: $node
+  containers:
+  - name: ssh-node
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command: ["chroot", "/host"]
+    tty: true
+    stdin: true
+    stdinOnce: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: host
+      mountPath: /host
+  volumes:
+  - name: host
+    hostPath:
+      path: /
+  hostNetwork: true
+  hostIPC: true
+  hostPID: true
+  restartPolicy: Never
+EOF
+  )
+
+  deletePod() {
+    kubectl delete $pod --wait=false
+  }
+  trap deletePod EXIT
+
+  echo "Created $pod"
+  echo "Waiting for container to start..."
+  kubectl wait --for=condition=Ready $pod >/dev/null
+  kubectl attach -it $pod -c ssh-node
+
+}
+
+ssh_pod() {
+  # TODO: improve this
+  if [ "$1" == "" ]; then
+    echo "Pod name must be specified."
+    exit 1
+  fi
+  kubectl exec -it "$@" bash || (
+    echo "Running bash in pod failed; trying with sh"
+    kubectl exec -it "$@" sh
+  )
+}
+
+print_usage() {
+  echo "Provider-agnostic way of opening a remote shell to a Kubernetes node."
+  echo
+  echo "Enables you to access a node even when it doesn't run an SSH server or"
+  echo "when you don't have the required credentials. Also, the way you log in"
+  echo "is always the same, regardless of what provides the Kubernetes cluster"
+  echo "(e.g. Minikube, Kind, Docker Desktop, GKE, AKS, EKS, ...)"
+  echo
+  echo "You must have cluster-admin rights to use this plugin."
+  echo
+  echo "The primary focus of this plugin is to provide access to nodes, but it"
+  echo "also provides a quick way of running a shell inside a pod."
+  echo
+  echo "Examples: "
+  echo "  # Open a shell to node of a single-node cluster (e.g. Docker Desktop)"
+  echo "  kubectl ssh node"
+  echo
+  echo "  # Open a shell to node of a multi-node cluster (e.g. GKE)"
+  echo "  kubectl ssh node my-worker-node-1"
+  echo
+  echo "  # Open a shell to a pod"
+  echo "  kubectl ssh pod my-pod"
+  echo
+  echo "Usage:"
+  echo "  kubectl ssh node [nodeName]"
+  echo "  kubectl ssh pod [podName] [-n namespace] [-c container]"
+  exit 0
+}
+
+if [ "$1" == "--help" ]; then
+  print_usage
+fi
+
+if [[ "$1" == node/* ]]; then
+  ssh_node ${1:5}
+elif [ "$1" == "node" ]; then
+  ssh_node $2
+elif [[ "$1" == pod/* ]]; then
+  ssh_pod "$@"
+elif [ "$1" == "pod" ]; then
+  shift
+  ssh_pod "$@"
+else
+  print_usage
+fi

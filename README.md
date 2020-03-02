@@ -55,4 +55,22 @@ kubectl really delete all -n some-namespace
 ```
 
 
+### kubectl ssh node
 
+Provider-agnostic way of opening a remote shell to a Kubernetes node.
+
+Enables you to access a node even when it doesn't run an SSH server or
+when you don't have the required credentials. Also, the way you log in
+is always the same, regardless of what provides the Kubernetes cluster
+(e.g. Minikube, Kind, Docker Desktop, GKE, AKS, EKS, ...)
+
+You must have cluster-admin rights to use this plugin.
+
+The primary focus of this plugin is to provide access to nodes, but it
+also provides a quick way of running a shell inside a pod.
+
+Example usage: 
+```bash
+kubectl ssh node             # access the node in a single-node cluster 
+kubectl ssh node my-node     # access a node in a multi-node cluster
+```

@@ -6,6 +6,14 @@ Some of my plugins for kubectl.
 
 Clone the repo and add it to your path (or download individual files and make sure they are executable and on your path). 
 
+For Example, in case if you want to ssh into a node:
+```shell
+git clone <this repo>
+cd kubectl-plugins/
+./kubectl-ssh node <NODE NAME>
+```
+You could get your node name via `kubectl get nodes -A` command.
+
 I'll make these plugins installable through [Krew](https://github.com/kubernetes-sigs/krew) if there's enough interest and find the time to do it. PRs welcome :)
 
 ## Plugins

@@ -2,19 +2,17 @@
 
 Some of my plugins for kubectl.
 
-## Installation 
+## Installation
 
-Clone the repo and add it to your path (or download individual files and make sure they are executable and on your path). 
+Clone the repo and add it to your path (or download individual files and make sure they are executable and on your
+path).
 
-For Example, in case if you want to ssh into a node:
+For Example, to install these plugins in `$HOME/kubectl-plugins`, do the following:
+
 ```shell
-git clone <this repo>
-cd kubectl-plugins/
-./kubectl-ssh node <NODE NAME>
+git clone https://github.com/luksa/kubectl-plugins $HOME/kubectl-plugins
+export PATH=$PATH:$HOME/kubectl-plugins
 ```
-You could get your node name via `kubectl get nodes -A` command.
-
-I'll make these plugins installable through [Krew](https://github.com/kubernetes-sigs/krew) if there's enough interest and find the time to do it. PRs welcome :)
 
 ## Plugins
 
@@ -22,18 +20,19 @@ I'll make these plugins installable through [Krew](https://github.com/kubernetes
 
 Force deletes an object by removing its finalizers and then deleting it.
 
-Example usage: 
-```bash
+Example usage:
+
+```shell
 kubectl force delete po my-stuck-pod
 ```
-
 
 ### kubectl really get all
 
 Lists absolutely all resources in a namespace, not just the ones returned by `kubectl get all`.
 
-Example usage: 
-```bash
+Example usage:
+
+```shell
 # List all resources in the current namespace
 kubectl really get all
 
@@ -51,17 +50,16 @@ kubectl really get all --selector foo=bar
 kubectl really get all -o yaml
 ```
 
-
 ### kubectl really delete all
 
 Deletes absolutely all resources in a namespace, not just the ones that `kubectl delete all` deletes.
 
-Example usage: 
-```bash
+Example usage:
+
+```shell
 kubectl really delete all
 kubectl really delete all -n some-namespace
 ```
-
 
 ### kubectl ssh node
 
@@ -77,62 +75,21 @@ You must have cluster-admin rights to use this plugin.
 The primary focus of this plugin is to provide access to nodes, but it
 also provides a quick way of running a shell inside a pod.
 
-Example usage: 
-```bash
+Example usage:
+
+```shell
 kubectl ssh node             # access the node in a single-node cluster 
 kubectl ssh node my-node     # access a node in a multi-node cluster
 ```
 
+You can get your node name with the `kubectl get nodes` command.
 
-## Help wanted
+## Pull requests welcome
 
-If anyone wants to help improve these plugins, please feel free to 
-submit a pull request any time. 
+If anyone wants to help improve these plugins, please feel free to
+submit a pull request any time.
 
-I don't have time to polish these plugins or create the krew 
+I don't have time to polish these plugins or create the krew
 metadata and submit them to the krew plugin repository. If you
-can do this, I and the rest of the Kubernetes community will 
+can do this, I and the rest of the Kubernetes community will
 be forever grateful!
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```

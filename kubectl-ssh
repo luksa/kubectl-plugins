@@ -4,8 +4,9 @@ set -e
 
 ssh_node() {
   node=$1
+  shift
   if [ "$node" = "" ]; then
-    node=$(kubectl get node -o name | sed 's/node\///' | tr '\n' ' ')
+    node=$(kubectl get node -o name $@ | sed 's/node\///' | tr '\n' ' ')
     node=${node::-1}
 
     if [[ "$node" =~ " " ]]; then
@@ -16,8 +17,9 @@ ssh_node() {
     fi
   fi
 
+  ns=default
   pod=$(
-    kubectl create -o name -f - <<EOF
+    kubectl create -n $ns -o name $@ -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -51,14 +53,14 @@ EOF
   )
 
   deletePod() {
-    kubectl delete $pod --wait=false
+    kubectl delete -n $ns $pod $@ --wait=false
   }
   trap deletePod EXIT
 
   echo "Created $pod"
   echo "Waiting for container to start..."
-  kubectl wait --for=condition=Ready $pod >/dev/null
-  kubectl attach -it $pod -c ssh-node
+  kubectl wait -n $ns --for=condition=Ready --timeout 60s $pod $@ >/dev/null
+  kubectl attach -n $ns -it $pod -c ssh-node $@
 
 }
 
@@ -108,9 +110,18 @@ if [ "$1" == "--help" ]; then
 fi
 
 if [[ "$1" == node/* ]]; then
-  ssh_node ${1:5}
+  nodeName=${1:5}
+  shift
+  ssh_node $nodeName "$@"
 elif [ "$1" == "node" ]; then
-  ssh_node $2
+  shift
+  case "$1" in
+  -*) nodeName="";;
+  "") ;;
+  *) nodeName="$1"; shift ;;
+  esac
+
+  ssh_node "$nodeName" "$@"
 elif [[ "$1" == pod/* ]]; then
   ssh_pod "$@"
 elif [ "$1" == "pod" ]; then

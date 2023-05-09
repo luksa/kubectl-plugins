@@ -70,9 +70,9 @@ ssh_pod() {
     echo "Pod name must be specified."
     exit 1
   fi
-  kubectl exec -it "$@" bash || (
+  kubectl exec -it "$@" -- bash || (
     echo "Running bash in pod failed; trying with sh"
-    kubectl exec -it "$@" sh
+    kubectl exec -it "$@" -- sh
   )
 }
 

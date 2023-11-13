@@ -84,6 +84,12 @@ kubectl ssh node my-node     # access a node in a multi-node cluster
 
 You can get your node name with the `kubectl get nodes` command.
 
+You can also execute a command inside the node and quit like with command below:
+
+```shell
+kubectl ssh node my-node ls   # access a node in a multi-node cluster and execute ls
+```
+
 ## Pull requests welcome
 
 If anyone wants to help improve these plugins, please feel free to

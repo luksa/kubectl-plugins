@@ -17,6 +17,11 @@ ssh_node() {
     fi
   fi
 
+  if [ $# -eq 1 ]; then
+    command="$1"
+    shift
+  fi
+
   ns=default
   pod=$(
     kubectl create -n "$ns" -o name "$@" -f - <<EOF
@@ -62,8 +67,12 @@ EOF
   echo "Created $pod"
   echo "Waiting for container to start..."
   kubectl wait -n "$ns" --for=condition=Ready --timeout 60s "$pod" "$@" >/dev/null
-  kubectl attach -n "$ns" -it "$pod" -c ssh-node "$@"
 
+  if [ -z "$command" ]; then
+    kubectl attach -n "$ns" -it "$pod" -c ssh-node "$@"
+  else
+    kubectl exec -n "$ns" -it "$pod" ssh-node -- "$command"
+  fi
 }
 
 ssh_pod() {
@@ -97,11 +106,14 @@ print_usage() {
   echo "  # Open a shell to node of a multi-node cluster (e.g. GKE)"
   echo "  kubectl ssh node my-worker-node-1"
   echo
+  echo "  # Execute the command ls on a node my-worker-node-1"
+  echo "  kubectl ssh node my-worker-node-1 ls"
+  echo
   echo "  # Open a shell to a pod"
   echo "  kubectl ssh pod my-pod"
   echo
   echo "Usage:"
-  echo "  kubectl ssh node [nodeName]"
+  echo "  kubectl ssh node [nodeName [command]]"
   echo "  kubectl ssh pod [podName] [-n namespace] [-c container]"
   exit 0
 }

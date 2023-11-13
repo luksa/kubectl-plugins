@@ -49,6 +49,8 @@ spec:
   hostIPC: true
   hostPID: true
   restartPolicy: Never
+  tolerations:
+    - operator: "Exists"
 EOF
   )
 

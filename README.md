@@ -90,6 +90,15 @@ You can also execute a command inside the node and quit like with command below:
 kubectl ssh node my-node ls   # access a node in a multi-node cluster and execute ls
 ```
 
+The `kubectl ssh` command runs the `busybox` image by default. You can
+override this by setting the `KUBECTL_SSH_IMAGE` environment variable.
+
+```shell
+export KUBECTL_SSH_IMAGE=alpine
+kubectl ssh node my-node
+```
+
+
 ## Pull requests welcome
 
 If anyone wants to help improve these plugins, please feel free to

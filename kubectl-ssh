@@ -4,6 +4,7 @@ set -e
 
 ssh_node() {
   node=$1
+  image=${KUBECTL_SSH_IMAGE:-busybox}
   shift
   if [ "$node" = "" ]; then
     node=$(kubectl get node -o name "$@" | sed 's/node\///' | tr '\n' ' ')
@@ -35,7 +36,7 @@ spec:
   nodeName: $node
   containers:
   - name: ssh-node
-    image: busybox
+    image: $image
     imagePullPolicy: IfNotPresent
     command: ["chroot", "/host"]
     tty: true
